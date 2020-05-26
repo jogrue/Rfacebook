@@ -41,13 +41,19 @@
 
 getReactions <- function(post, token, verbose=TRUE, api=NULL){
 
-	add_to_url <- paste0("?fields=reactions.type(LIKE).limit(0).summary(true).as(like),",
-		"reactions.type(LOVE).limit(0).summary(true).as(love),",
-		"reactions.type(HAHA).limit(0).summary(true).as(haha),",
-		"reactions.type(WOW).limit(0).summary(true).as(wow),",
-		"reactions.type(SAD).limit(0).summary(true).as(sad),",
-		"reactions.type(ANGRY).limit(0).summary(true).as(angry)")
-	reactions <- data.frame()
+  add_to_url <- paste0(
+    "?fields=",
+    "reactions.type(LIKE).limit(0).summary(true).as(like),",
+    "reactions.type(LOVE).limit(0).summary(true).as(love),",
+    "reactions.type(WOW).limit(0).summary(true).as(wow),",
+    "reactions.type(HAHA).limit(0).summary(true).as(haha),",
+    "reactions.type(SAD).limit(0).summary(true).as(sad),",
+    "reactions.type(ANGRY).limit(0).summary(true).as(angry),",
+    "reactions.type(THANKFUL).limit(0).summary(true).as(thankful),",
+    "reactions.type(PRIDE).limit(0).summary(true).as(pride),",
+    "reactions.type(CARE).limit(0).summary(true).as(care)"
+  )
+  reactions <- data.frame()
 
 	if (verbose==TRUE){ pb <- utils::txtProgressBar(min=0,max=length(post), style=3) }
 	i = 0
@@ -59,18 +65,24 @@ getReactions <- function(post, token, verbose=TRUE, api=NULL){
 		new.df <- data.frame(
 			id = p,
 			likes_count = ifelse(!is.null(content$like$summary$total_count),
-				content$like$summary$total_count, 0),
+			                     content$like$summary$total_count, 0),
 			love_count = ifelse(!is.null(content$love$summary$total_count),
-				content$love$summary$total_count, 0),
-			haha_count = ifelse(!is.null(content$haha$summary$total_count),
-				content$haha$summary$total_count, 0),
+			                    content$love$summary$total_count, 0),
 			wow_count = ifelse(!is.null(content$wow$summary$total_count),
-				content$wow$summary$total_count, 0),
+			                   content$wow$summary$total_count, 0),
+			haha_count = ifelse(!is.null(content$haha$summary$total_count),
+			                    content$haha$summary$total_count, 0),
 			sad_count = ifelse(!is.null(content$sad$summary$total_count),
-				content$sad$summary$total_count, 0),
+			                   content$sad$summary$total_count, 0),
 			angry_count = ifelse(!is.null(content$angry$summary$total_count),
-				content$angry$summary$total_count, 0),
-			stringsAsFactors=FALSE)
+			                     content$angry$summary$total_count, 0),
+			thankful_count = ifelse(!is.null(content$thankful$summary$total_count),
+			                        content$thankful$summary$total_count, 0),
+			pride_count = ifelse(!is.null(content$pride$summary$total_count),
+			                     content$pride$summary$total_count, 0),
+			care_count = ifelse(!is.null(content$care$summary$total_count),
+			                    content$care$summary$total_count, 0),
+			stringsAsFactors = FALSE)
 		reactions <- rbind(reactions, new.df)
 		if (verbose==TRUE){ i <- i + 1; utils::setTxtProgressBar(pb, i) }
 	}
